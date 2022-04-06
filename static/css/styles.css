@@ -1,0 +1,37 @@
+body{
+
+}
+
+footer{
+  text-align: center;
+  border-top: 5%;
+}
+
+.main-contents{
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+.opening-text {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+.boxes{
+  padding-left: 3%;
+  padding-right: 3%;
+  padding-top: 3%;
+  padding-bottom: 3%;
+
+}
+.footer-icons{
+  padding-bottom: 5%;
+  padding-left: 5%;
+  padding-right: 5%
+}
+
+.copyright{
+  padding-top: 3%;
+}
+
+.add-form{
+    padding: 10% 10% 20% 15%;
+}
