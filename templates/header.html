@@ -14,7 +14,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container-fluid first-div">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{{url_for('home')}}">
      <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
      Work Easy
    </a>
@@ -27,9 +27,9 @@
           <a class="nav-link active" aria-current="page" href="{{url_for('add')}}">Add new cafe</a>
         </li>
       </ul>
-      <form class="d-flex" method="post">
+      <form class="d-flex" method="post" name="search-form" action="">
         <input class="form-control me-2" type="search" placeholder="Search for specific cafe" aria-label="Search" name="search">
-        <button class="btn btn-outline-light" type="submit">Search </button>
+        <button class="btn btn-outline-light" value="search_det" type="submit" name="submit_btn">Search </button>
       </form>
     </div>
   </div>
