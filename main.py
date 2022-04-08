@@ -4,15 +4,15 @@ from flask_wtf import FlaskForm
 from werkzeug.utils import redirect
 from wtforms import *
 from wtforms.validators import DataRequired, URL
-from flask import Flask, jsonify, render_template, request, url_for, flash
+from flask import Flask, jsonify, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
-import json
+
 
 
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SECRET_KEY'] = "secret-key"
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = "some_secret"
 
 ##Connect to Database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URL", 'sqlite:///cafes.db')
@@ -91,7 +91,7 @@ def home():
     else:
         page = request.args.get("page", 1, type=int)
         all_cafes = Cafe.query.paginate(per_page=10, page=page)
-        print(all_cafes.page)
+
     caf_list = []
     for i in all_cafes.items:
         caf = i.to_dict()
