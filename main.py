@@ -6,13 +6,17 @@ from wtforms import *
 from wtforms.validators import DataRequired, URL
 from flask import Flask, jsonify, render_template, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+import os
+import json
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = "secret-key"
 
 ##Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URL", 'sqlite:///cafes.db')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 Bootstrap(app)
@@ -42,6 +46,7 @@ class Cafe(db.Model):
 
         # Method 2. Altenatively use Dictionary Comprehension to do the same thing.
         # return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+# db.create_all()
 
 
 class AddCafeForm(FlaskForm):
