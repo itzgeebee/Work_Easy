@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from werkzeug.utils import redirect
 from wtforms import *
 from wtforms.validators import DataRequired, URL
-from flask import Flask, jsonify, render_template, request, url_for
+from flask import Flask, jsonify, render_template, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -37,7 +37,6 @@ class Cafe(db.Model):
         dictionary = {}
         # Loop through each column in the data record
         for column in self.__table__.columns:
-
             dictionary[column.name] = getattr(self, column.name)
         return dictionary
 
@@ -65,42 +64,37 @@ def home():
         if request.form["submit_btn"] == "search_det":
             search_input = request.form.get("search")
             print(search_input)
-            # all_cafe = Cafe.query.filter_by(name=search_input).all()
-            all_cafe = db.session.query(Cafe).filter(
-                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%"))
+            page = request.args.get("page", 1, type=int)
+            all_cafes = db.session.query(Cafe).filter(
+                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).paginate(per_page=10,
+                                                                                                      page=page)
         else:
+
             location_input = request.form.get("location")
             socket_input = request.form.get("sockets") == "on"
             wifi_input = request.form.get("wifi") == "on"
             call_input = request.form.get("calls") == "on"
             toilet_input = request.form.get("toilet") == "on"
-            print(location_input, socket_input == "on", wifi_input == "on", call_input == "on", toilet_input == "on")
-            all_cafe = Cafe.query.filter_by(location=location_input,
-                                            has_sockets=socket_input,
-                                            has_wifi=wifi_input,
-                                            can_take_calls=call_input,
-                                            has_toilet=toilet_input
-                                            ).all()
-        if not all_cafe:
-            return jsonify({"error": {"Not found": "Sorry we do not have a cafe at that location"}})
-        else:
-            cafes = []
-            for i in all_cafe:
-                result = i.to_dict()
-                cafes.append(result)
 
-            all_cafes_json = jsonify(cafes=cafes).json
+            print(location_input, socket_input, wifi_input, call_input, toilet_input)
+            page = request.args.get("page", 1, type=int)
+            all_cafes = Cafe.query.filter_by(location=location_input, has_sockets=socket_input,
+                                             has_wifi=wifi_input, has_toilet=toilet_input,
+                                             can_take_calls=call_input
+                                             ).paginate(per_page=10, page=page)
 
     else:
-        all_cafes = Cafe.query.all()
-        caf_list = []
-        for i in all_cafes:
-            caf = i.to_dict()
-            caf_list.append(caf)
+        page = request.args.get("page", 1, type=int)
+        all_cafes = Cafe.query.paginate(per_page=10, page=page)
+        print(all_cafes.page)
+    caf_list = []
+    for i in all_cafes.items:
+        caf = i.to_dict()
+        caf_list.append(caf)
 
-        all_cafes_json = jsonify(cafes=caf_list).json
-        # pprint(all_cafes_json)
-    return render_template("index.html", cafes=all_cafes_json)
+    all_cafes_json = jsonify(cafes=caf_list).json
+    pprint(all_cafes_json)
+    return render_template("index.html", cafes=all_cafes_json, pages=all_cafes)
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -124,6 +118,39 @@ def add():
         return redirect(url_for("home"))
 
     return render_template("add.html", form=form)
+
+
+@app.route("/update-cafe", methods=["GET", "POST"])
+def update_cafe():
+    cafe_id = request.args.get("cafe_id")
+    cafe = Cafe.query.get(cafe_id)
+    edit_form = AddCafeForm(
+        title=cafe.name,
+        location=cafe.location,
+        img_url=cafe.img_url,
+        map_url=cafe.map_url,
+        seats=cafe.seats,
+        coffee=cafe.coffee_price,
+        has_toilet=cafe.has_toilet,
+        has_sockets=cafe.has_sockets,
+        can_take_calls=cafe.can_take_calls
+    )
+    if edit_form.validate_on_submit():
+        cafe.name = edit_form.title.data
+        cafe.location = edit_form.location.data
+        cafe.img_url = edit_form.img_url.data
+        cafe.map_url = edit_form.map_url.data
+        cafe.seats = edit_form.seats.data
+        cafe.coffee_price = edit_form.coffee.data
+        cafe.has_toilet = bool(edit_form.has_toilet.data)
+        cafe.has_wifi = bool(edit_form.has_wifi.data)
+        cafe.has_sockets = bool(edit_form.has_sockets.data)
+        cafe.can_take_calls = bool(edit_form.can_take_calls.data)
+
+        db.session.commit()
+        return redirect(url_for("home"))
+
+    return render_template("update-cafe.html", form=edit_form)
 
 
 @app.route("/delete/<int:cafe_id>", methods=["GET", "DELETE"])

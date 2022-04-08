@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>work easy</title>
-
+    <!-- favicon   -->
+      <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
     <!-- font awesome -->
     <script src="https://kit.fontawesome.com/c381305349.js" crossorigin="anonymous"></script>
     <!-- bootstrap css -->
@@ -11,11 +12,12 @@
     <!-- css -->
     <link rel="stylesheet" href="../static/css/styles.css">
   </head>
+
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container-fluid first-div">
     <a class="navbar-brand" href="{{url_for('home')}}">
-     <img src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+     <img src="static/images/profile.png" alt="work-easy logo" width="30" height="24" class="d-inline-block align-text-top">
      Work Easy
    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +30,7 @@
         </li>
       </ul>
       <form class="d-flex" method="post" name="search-form" action="">
-        <input class="form-control me-2" type="search" placeholder="Search for specific cafe" aria-label="Search" name="search">
+        <input class="form-control me-2" type="search" placeholder=" search cafe or location" aria-label="Search" name="search">
         <button class="btn btn-outline-light" value="search_det" type="submit" name="submit_btn">Search </button>
       </form>
     </div>

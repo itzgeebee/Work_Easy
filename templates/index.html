@@ -1,20 +1,28 @@
 {% include "header.html" %}
+
 <div class="container main-contents">
-  <p class= "opening-text ">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Mi in nulla posuere sollicitudin. Amet facilisis magna etiam tempor orci eu. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis. Nisl rhoncus mattis rhoncus urna neque viverra. Nibh praesent tristique magna sit amet. Sodales neque sodales ut etiam sit amet nisl purus in. Elit eget gravida cum sociis natoque penatibus et magnis. Morbi leo urna molestie at elementum. Ultricies leo integer malesuada nunc vel risus commodo. Aliquam sem fringilla ut morbi tincidunt augue interdum velit euismod. Nibh sed pulvinar proin gravida hendrerit lectus a. Lectus urna duis convallis convallis tellus.</p>
+  <p class= "opening-text ">WorkEasy helps you find a suitable location to comfortably do your job outside your office or your home. With Work Easy, you get to see if a cafe contains everything you’re looking for in a work-station at a glance.
+Use WorkEasy search function to search for a specific cafe or a cafe in your location. WorkEasy filters such as if a location provides wifi services, has a toilet, or sockets to connect your gadgets and even shows if you’re allowed to make or receive phone calls inside the location help you narrow down specific criteria for a cafe, making it easy and effective to pick a place.
+
+</p>
 
   <div class="row">
     <div class="col-lg-3 col-md-3 col-sm-12 boxes">
-      <div class="dropdown ">
+
+      <div class="dropdown">
           <button class="btn btn-dark dropdown-toggle dropdown-menu-sm-end" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-filter"></i> <span>Filters</span>
           </button>
         <div class="dropdown-menu">
-          <form class="px-4 py-3" method="post" name="filter-form" action="#">
+          <form class="px-4 py-3 needs-validation" method="post" name="filter-form" novalidate>
 
 
               <div class="mb-3">
-                <label for="exampleDropdownFormEmail1" class="form-label">Location</label>
-                <input type="text" class="form-control" id="exampleDropdownFormEmail1" placeholder="Peckham" name = "location">
+                <label for="validationCustom01" class="form-label">Location</label>
+                <input type="text" class="form-control" id="validationCustom01" placeholder="e.g Peckham" name = "location"  required>
+                  <div class="valid-feedback">
+                        Looks good!
+                  </div>
               </div>
 
               <div class="mb-3">
@@ -59,6 +67,8 @@
       </div>
       </div>
 
+
+
     <div class="col-lg-9 col-md-12 col-sm-12 boxes">
         {%for cafe in cafes["cafes"]: %}
       <div class="card mb-3" style="max-width: 540px;">
@@ -69,9 +79,26 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{cafe.name}}</h5>
-              <p class="card-text">Location: {{cafe.location}} | <a href="{{cafe.map_url}}">Map</a>  <br>
-                <span>Seats: {{cafe.seats}}</span><br>
-              <span class="card-text"><small class="text-muted">Coffee Price: <strong>{{cafe.coffee_price}}</strong></small></span></p>
+              <p class="card-text">Location: {{cafe.location}} | <a  href="{{cafe.map_url}}">map</a>  <br>
+                  <span>Seats: {{cafe.seats}}</span>
+                {%if cafe.has_sockets==1: %}
+                  <span>
+                   | <i class="fa-solid fa-plug"></i>
+                {%endif%}
+                {%if cafe.has_wifi ==1: %}
+                   | <i class="fa-solid fa-wifi"></i>
+                {%endif%}
+                {%if cafe.can_take_calls ==1: %}
+                   | <i class="fa-solid fa-phone"></i>
+                {%endif%}
+                {%if cafe.has_toilet ==1: %}
+                  |  <i class="fa-solid fa-toilet"></i>
+                       </span>
+                {%endif%}
+                  <br>
+
+              <span class="card-text"><small class="text-muted">Coffee Price: <strong>{{cafe.coffee_price}}</strong></small></span>
+              <span>| <a href="{{url_for('update_cafe', cafe_id=cafe.id)}}"><i class="fa-solid fa-pen"></i></a></span></p>
             </div>
           </div>
         </div>
@@ -85,6 +112,19 @@
       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158858.47339290322!2d-0.24167949207428194!3d51.52855824369068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2sng!4v1649160078209!5m2!1sen!2sng" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div> -->
   </div>
+    {%for page_num in pages.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2): %}
+        {%if page_num:%}
+            {%if pages.page == page_num:%}
+
+                <a class="btn btn-dark mb-2" href="{{url_for('home', page=page_num)}}">{{page_num}}</a>
+            {%else:%}
+                <a class="btn btn-outline-dark mb-2" href="{{url_for('home', page=page_num)}}">{{page_num}}</a>
+            {%endif%}
+        {%else:%}
+        ...
+        {%endif%}
+    {%endfor%}
 </div>
+
 
 {% include "footer.html" %}

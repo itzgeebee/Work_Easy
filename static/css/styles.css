@@ -1,16 +1,18 @@
-body{
-
-}
 
 footer{
   text-align: center;
   border-top: 5%;
 }
 
+nav{
+    padding-left:3%;
+    padding-right:3%;
+}
 .main-contents{
   padding-top: 5%;
   padding-bottom: 5%;
 }
+
 .opening-text {
   padding-left: 2%;
   padding-right: 2%;
