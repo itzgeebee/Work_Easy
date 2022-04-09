@@ -11,6 +11,11 @@ nav{
     font-size: 1rem;
     padding-left:3%;
     padding-right:3%;
+    padding-bottom: 3%;
+}
+
+.first-div{
+  font-size: 1.5rem;
 }
 .main-contents{
   padding-top: 5%;
@@ -22,6 +27,7 @@ nav{
   padding-right: 2%;
 }
 .boxes{
+  font-size: 1.5rem;
   padding-left: 3%;
   padding-right: 3%;
   padding-top: 3%;
