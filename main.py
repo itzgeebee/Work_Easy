@@ -12,7 +12,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SECRET_KEY'] = "some_secret"
+
 
 ##Connect to Database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URL", 'sqlite:///cafes.db')
@@ -48,7 +48,7 @@ class Cafe(db.Model):
         # return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 # db.create_all()
 
-
+# adding cafe form
 class AddCafeForm(FlaskForm):
     title = StringField("Cafe name", validators=[DataRequired()])
     location = StringField("Cafe location", validators=[DataRequired()])
@@ -67,26 +67,21 @@ class AddCafeForm(FlaskForm):
 def home():
     if request.method == "POST":
         if request.form["submit_btn"] == "search_det":
+            # search
             search_input = request.form.get("search")
-            print(search_input)
-            page = request.args.get("page", 1, type=int)
             all_cafes = db.session.query(Cafe).filter(
-                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).paginate(per_page=10,
-                                                                                                      page=page)
+                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).all()
         else:
-
+            # use filters
             location_input = request.form.get("location")
             socket_input = request.form.get("sockets") == "on"
             wifi_input = request.form.get("wifi") == "on"
             call_input = request.form.get("calls") == "on"
             toilet_input = request.form.get("toilet") == "on"
-
-            print(location_input, socket_input, wifi_input, call_input, toilet_input)
-            page = request.args.get("page", 1, type=int)
             all_cafes = Cafe.query.filter_by(location=location_input, has_sockets=socket_input,
                                              has_wifi=wifi_input, has_toilet=toilet_input,
                                              can_take_calls=call_input
-                                             ).paginate(per_page=10, page=page)
+                                             ).all()
 
     else:
         page = request.args.get("page", 1, type=int)

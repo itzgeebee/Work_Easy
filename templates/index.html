@@ -1,5 +1,4 @@
 {% include "header.html" %}
-
 <div class="container main-contents">
   <p class= "opening-text ">WorkEasy helps you find a suitable location to comfortably do your job outside your office or your home. With Work Easy, you get to see if a cafe contains everything you’re looking for in a work-station at a glance.
 Use WorkEasy search function to search for a specific cafe or a cafe in your location. WorkEasy filters such as if a location provides wifi services, has a toilet, or sockets to connect your gadgets and even shows if you’re allowed to make or receive phone calls inside the location help you narrow down specific criteria for a cafe, making it easy and effective to pick a place.
@@ -78,7 +77,7 @@ Use WorkEasy search function to search for a specific cafe or a cafe in your loc
           </div>
           <div class="col-md-8">
             <div class="card-body">
-              <h5 class="card-title">{{cafe.name}}</h5>
+              <h3 class="card-title">{{cafe.name}}</h3>
               <p class="card-text">Location: {{cafe.location}} | <a  href="{{cafe.map_url}}">map</a>  <br>
                   <span>Seats: {{cafe.seats}}</span>
                 {%if cafe.has_sockets==1: %}
@@ -105,6 +104,7 @@ Use WorkEasy search function to search for a specific cafe or a cafe in your loc
       </div>
         {%endfor%}
     </div>
+
 
 
 
