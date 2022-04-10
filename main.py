@@ -12,6 +12,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# app.config['SECRET_KEY'] = "secretkey"
 
 
 ##Connect to Database
@@ -66,11 +67,12 @@ class AddCafeForm(FlaskForm):
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
+        page = request.args.get("page", 1, type=int)
         if request.form["submit_btn"] == "search_det":
             # search
             search_input = request.form.get("search")
             all_cafes = db.session.query(Cafe).filter(
-                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).all()
+                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).paginate(per_page=10, page=page)
         else:
             # use filters
             location_input = request.form.get("location")
@@ -81,7 +83,7 @@ def home():
             all_cafes = Cafe.query.filter_by(location=location_input, has_sockets=socket_input,
                                              has_wifi=wifi_input, has_toilet=toilet_input,
                                              can_take_calls=call_input
-                                             ).all()
+                                             ).paginate(per_page=10, page=page)
 
     else:
         page = request.args.get("page", 1, type=int)
