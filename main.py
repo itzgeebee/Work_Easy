@@ -68,22 +68,12 @@ class AddCafeForm(FlaskForm):
 def home():
     if request.method == "POST":
         page = request.args.get("page", 1, type=int)
-        if request.form["submit_btn"] == "search_det":
+        # if request.form["submit_btn"] == "search_det":
             # search
-            search_input = request.form.get("search")
-            all_cafes = db.session.query(Cafe).filter(
-                Cafe.name.like(f"{search_input}%") | Cafe.location.like(f"{search_input}%")).paginate(per_page=10, page=page)
-        else:
-            # use filters
-            location_input = request.form.get("location")
-            socket_input = request.form.get("sockets") == "on"
-            wifi_input = request.form.get("wifi") == "on"
-            call_input = request.form.get("calls") == "on"
-            toilet_input = request.form.get("toilet") == "on"
-            all_cafes = Cafe.query.filter_by(location=location_input, has_sockets=socket_input,
-                                             has_wifi=wifi_input, has_toilet=toilet_input,
-                                             can_take_calls=call_input
-                                             ).paginate(per_page=10, page=page)
+        search_input = request.form.get("search")
+        all_cafes = db.session.query(Cafe).filter(
+            Cafe.name.like(f"{search_input}%")
+            | Cafe.location.like(f"{search_input}%")).paginate(per_page=10, page=page)
 
     else:
         page = request.args.get("page", 1, type=int)
@@ -98,6 +88,26 @@ def home():
     pprint(all_cafes_json)
     return render_template("index.html", cafes=all_cafes_json, pages=all_cafes)
 
+@app.route("/filters", methods=["GET", "POST"])
+def filters():
+    page = request.args.get("page", 1, type=int)
+    location_input = request.form.get("location")
+    socket_input = request.form.get("sockets") == "on"
+    wifi_input = request.form.get("wifi") == "on"
+    call_input = request.form.get("calls") == "on"
+    toilet_input = request.form.get("toilet") == "on"
+    all_cafes = Cafe.query.filter_by(location=location_input, has_sockets=socket_input,
+                                     has_wifi=wifi_input, has_toilet=toilet_input,
+                                     can_take_calls=call_input
+                                     ).paginate(per_page=10, page=page)
+    caf_list = []
+    for i in all_cafes.items:
+        caf = i.to_dict()
+        caf_list.append(caf)
+
+    all_cafes_json = jsonify(cafes=caf_list).json
+    pprint(all_cafes_json)
+    return render_template("index.html", cafes=all_cafes_json, pages=all_cafes)
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
